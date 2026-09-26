@@ -1,0 +1,38 @@
+schema: 1
+week: "03"
+
+student:
+  name: "Sanzhar Sansyzbayev"
+  student_id: "24B031016"
+  github: "TvZex"
+
+assistant:
+  tool: "ChatGPT"
+  model: "GPT-5.6 Luna"
+
+counts:
+  user_stories: 7
+  acceptance_criteria_sets: 3
+
+checker:
+  pass: 23
+  fail: 0
+  error: 0
+  commit: "5dbf02c"
+
+assumptions:
+  overlap_touching_bookings: not-allowed
+  exactly_two_hours: allowed
+
+traceability:
+  use_cases_not_covered: []
+  stories_not_traced: []
+
+review_findings:
+  - "US-03 was narrowed so the cancellation story focuses on releasing the student's reservation."
+  - "AC-08 was reviewed to ensure the no-overlap business rule is explicitly tested."
+  - "UC-06 was additionally connected to UC-03 because cancellation also requires confirmation."
+
+honesty:
+  can_explain_everything_submitted: yes
+  ai_usage_disclosed: yes
