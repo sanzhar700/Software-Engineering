@@ -1,0 +1,46 @@
+@startuml
+
+actor Student
+participant BookingService
+participant BookingRepository
+
+Student -> BookingService : bookRoom(room, start, end)
+
+BookingService -> BookingService : validate future start and duration
+
+alt invalid time
+    BookingService --> Student : booking rejected
+else valid time
+    BookingService -> BookingRepository : check availability(room, start, end)
+    BookingRepository --> BookingService : available / unavailable
+
+    alt unavailable
+        BookingService --> Student : room unavailable
+    else available
+        BookingService -> BookingRepository : save booking
+        BookingRepository --> BookingService : booking created
+        BookingService --> Student : confirmation
+    end
+end
+
+note right of BookingService
+Rules:
+R1: start is in the future and
+    duration is > 0 and <= 2 hours.
+R3: blocked room cannot accept
+    a new booking.
+R4: successful booking produces
+    a confirmation.
+R2: availability check prevents
+    overlapping active bookings.
+end note
+
+note bottom
+Assumptions:
+1. BookingRepository can determine whether
+   the requested room/time is available.
+2. A failed booking is not saved.
+3. Touching bookings do not overlap.
+end note
+
+@enduml
