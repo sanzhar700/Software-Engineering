@@ -1,0 +1,62 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Student {
+    - studentId : String
+    - name : String
+    - email : String
+    --
+    + viewAvailability() : void
+    + bookRoom(room : Room, start : DateTime, end : DateTime) : Booking
+    + cancelBooking(booking : Booking) : void
+}
+
+class Room {
+    - roomId : String
+    - name : String
+    - blocked : Boolean
+    --
+    + isAvailable(start : DateTime, end : DateTime) : Boolean
+    + block() : void
+    + unblock() : void
+}
+
+class Booking {
+    - bookingId : String
+    - startTime : DateTime
+    - endTime : DateTime
+    - status : String
+    --
+    + cancel() : void
+}
+
+Student "1" -- "0..*" Booking : makes
+Room "1" -- "0..*" Booking : has
+
+note right of Booking
+Rules:
+R1: booking starts in the future,
+    duration > 0 and <= 2 hours
+R2: active bookings for the same room
+    cannot overlap
+R3: a blocked room cannot accept
+    a new booking
+R4: a successful booking produces
+    a confirmation
+end note
+
+note bottom
+Assumptions:
+1. Each Booking belongs to exactly one Student.
+2. Each Booking reserves exactly one Room.
+3. Touching bookings such as 10:00–12:00
+   and 12:00–13:00 do not overlap.
+4. Blocking a room does not cancel or modify
+   existing bookings.
+5. Administrator remains an actor and is not
+   modeled as a domain class.
+6. Confirmation is system behavior, not a
+   separate domain class.
+end note
+
+@enduml

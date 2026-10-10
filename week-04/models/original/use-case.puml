@@ -1,0 +1,47 @@
+@startuml
+left to right direction
+
+actor Student
+actor Administrator
+
+rectangle "Smart Campus Study Room Booking System" {
+
+  usecase "UC-01\nView availability" as UC01
+  usecase "UC-02\nBook room" as UC02
+  usecase "UC-03\nCancel booking" as UC03
+  usecase "UC-04\nReceive confirmation" as UC04
+
+  usecase "UC-05\nBlock room" as UC05
+  usecase "UC-06\nUnblock room" as UC06
+  usecase "UC-07\nReview room usage" as UC07
+}
+
+' Student goals
+Student --> UC01
+Student --> UC02
+Student --> UC03
+Student --> UC04
+
+' Administrator goals
+Administrator --> UC05
+Administrator --> UC06
+Administrator --> UC07
+
+' A confirmation is required after booking or cancellation
+UC02 --> UC04 : <<include>>
+UC03 --> UC04 : <<include>>
+
+note bottom of UC02
+Assumptions:
+- Booking starts in the future (R1)
+- Maximum booking duration is 2 hours (R2)
+- Same-room bookings cannot overlap (R3)
+- A blocked room cannot be booked (R4)
+end note
+
+note right of UC04
+Confirmation is sent when a
+booking or cancellation is recorded.
+end note
+
+@enduml

@@ -1,0 +1,78 @@
+
+@startuml
+skinparam classAttributeIconSize 0
+
+class Student {
+    - studentId : String
+    - name : String
+    - email : String
+    --
+    + viewAvailability() : void
+    + bookRoom(room : Room, start : DateTime, end : DateTime) : Booking
+    + cancelBooking(booking : Booking) : void
+}
+
+class Administrator {
+    - administratorId : String
+    - name : String
+    - email : String
+    --
+    + blockRoom(room : Room) : void
+    + unblockRoom(room : Room) : void
+    + reviewRoomUsage(start : DateTime, end : DateTime) : void
+}
+
+class Room {
+    - roomId : String
+    - name : String
+    - blocked : Boolean
+    --
+    + isAvailable(start : DateTime, end : DateTime) : Boolean
+    + block() : void
+    + unblock() : void
+}
+
+class Booking {
+    - bookingId : String
+    - startTime : DateTime
+    - endTime : DateTime
+    - status : String
+    --
+    + cancel() : void
+    + isValid() : Boolean
+}
+
+Student "1" -- "0..*" Booking : makes
+Room "1" -- "0..*" Booking : is reserved by
+
+Administrator ..> Room : manages
+Administrator ..> Booking : reviews usage
+
+Booking --> Room : reserves
+Booking --> Student : belongs to
+
+note right of Booking
+Constraints:
+R1: booking starts in the future
+R2: duration <= 2 hours
+R3: bookings for the same room
+    must not overlap
+R4: blocked rooms cannot be booked
+end note
+
+note bottom
+Assumptions:
+1. Each Booking belongs to exactly one Student.
+2. Each Booking reserves exactly one Room.
+3. A Student may have zero or more bookings.
+4. A Room may have zero or more bookings over time.
+5. Administrator is a domain role, but no inheritance
+   hierarchy is assumed.
+6. Confirmation is treated as system behavior from UC-04;
+   no separate Confirmation class is required.
+7. Authentication, payment, database, equipment and
+   notification infrastructure are outside the domain model.
+end note
+
+@enduml
+
