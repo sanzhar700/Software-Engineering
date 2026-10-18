@@ -27,7 +27,7 @@ checker:                        # from your LAST run of python tests/check_sis.p
   pass: 43
   fail: 1
   error: 0
-  commit: fd1fc5f
+  commit: e7d8ad5
 
 counts:                         # copy from report.md; the validator re-measures every one
   stories: 3
