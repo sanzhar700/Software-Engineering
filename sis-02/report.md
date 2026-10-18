@@ -15,12 +15,12 @@
      what is out of scope (payments, prerequisites, timetable clashes, waiting lists,
      cancellation) — section 2 must not mention them. Section 10 keeps your first version. -->
 
-**Scope:** (write here)
+**Scope:** This assignment models how a signed-in student browses one semester’s course offerings and requests enrollment in a selected offering. It covers catalog information, current capacity checks, duplicate rejection, successful enrollment, and clear rejection outcomes. Payments, prerequisites, timetable clashes, waiting lists, and cancellation are outside scope.
 
 **Assumptions:**
 
-1. (write here)
-2. (write here)
+1. The student is signed in before browsing the catalog or requesting registration.
+2. The selected offering exists and has a positive whole-number capacity.
 
 ## 2. User stories and acceptance criteria
 
@@ -32,24 +32,24 @@
 
 ### US-01 — Browse offerings
 
-**US-01:** (write here — As a student, I want …, so that …)
+**US-01:** As a student, I want to browse offerings for one semester, so that I can compare course details and available places.
 
-- **AC-01** (R?): (write here — Given …, When …, Then …)
-- **AC-02** (R?): (write here)
+- **AC-01** (R1): Given the catalog contains offerings for a semester, When I browse that semester, Then each offering shows its course code, title, offering and available places.
+- **AC-02** (R1): Given I am viewing a semester’s catalog, When I inspect an offering, Then the displayed available places describe that offering and do not reserve a place.
 
 ### US-02 — Register for an offering
 
-**US-02:** (write here)
+**US-02:** As a student, I want to request registration in a selected offering, so that my enrollment is recorded and confirmed when the request succeeds.
 
-- **AC-03** (R?): (write here)
-- **AC-04** (R?): (write here)
+- **AC-03** (R2, R4): Given I am not enrolled and a place is available, When I register for the selected offering, Then one Enrollment links me to that offering, availability decreases by one, and confirmation follows creation.
+- **AC-04** (R2, R4): Given I am not enrolled and exactly one place remains, When I register for that offering, Then the final place is assigned by one atomic check-and-create operation and exactly one confirmation is returned.
 
 ### US-03 — Receive a clear rejection
 
-**US-03:** (write here)
+**US-03:** As a student, I want a clear reason when registration is rejected, so that I know why my request did not change my enrollment.
 
-- **AC-05** (R?): (write here)
-- **AC-06** (R?): (write here)
+- **AC-05** (R2, R5): Given the catalog showed a place but the offering is now full, When I request registration, Then I receive “course full”, no Enrollment is created, and the enrollment count remains unchanged.
+- **AC-06** (R3, R5): Given I am already enrolled in the selected offering, When I request registration again, Then I receive “already enrolled”, no Enrollment is created, and the enrollment count remains unchanged.
 
 ## 3. Sequence diagram
 
@@ -163,9 +163,9 @@
 
 ### B1 — Requirements (Prompt A)
 
-- **Tool:** (write here)
-- **Model:** (write here)
-- **Date:** (write here)
+- **Tool:** Codex
+- **Model:** not displayed
+- **Date:** 2026-10-18
 - **Purpose:** draft 3 user stories and 6 acceptance criteria
 
 <!-- Model: the exact model with its version, as the tool shows it (e.g. "GPT-5 Thinking",
@@ -175,7 +175,36 @@
 **Prompt:**
 
 ~~~~text
-(paste here)
+Act as a requirements analyst. Use only this course registration scenario and rules R1–R5: A student browses an electronic course catalog, chooses a course offering and requests registration. Each offering has a limited number of places. A Course describes a subject. A CourseOffering is one scheduled section in one semester. Registration always targets a specific offering. R1. Catalog: Show the course code, title, offering and available places for one semester. R2. Capacity: Recheck current availability when registering. Enrollment must never exceed the offering's capacity. R3. Duplicates: A student may have at most one enrollment in the same offering. Reject a repeat request. R4. Success: Create exactly one Enrollment linking the student and offering, update availability and return a confirmation. R5. Rejection: Explain "course full" or "already enrolled". Create no enrollment and leave the enrollment count unchanged. A catalog view does not reserve a place. Model the final checks and enrollment creation as one atomic operation so competing requests cannot take the same last place. My initial assumptions are 1. The student is signed in before browsing the catalog or requesting registration. 2. The selected offering exists and has a positive whole-number capacity.
+Draft 3 user stories and 2 Given / When / Then acceptance criteria for each. Use IDs US-01 to US-03 and AC-01 to AC-06. Map each criterion to rule IDs.
+Cover normal and rejection behavior. List uncertainty separately. Do not add excluded features or invent university policies.
+~~~~
+
+**Response:**
+
+~~~~text
+### US-01 — Browse offerings
+
+**US-01:** As a student, I want to browse offerings for one semester, so that I can compare course details and available places.
+
+- **AC-01** (R1): Given the catalog contains offerings for a semester, When I browse that semester, Then each offering shows its course code, title, offering and available places.
+- **AC-02** (R1): Given I am viewing a semester’s catalog, When I inspect an offering, Then the displayed available places describe that offering and do not reserve a place.
+
+### US-02 — Register for an offering
+
+**US-02:** As a student, I want to request registration in a selected offering, so that my enrollment is recorded and confirmed when the request succeeds.
+
+- **AC-03** (R2, R4): Given I am not enrolled and a place is available, When I register for the selected offering, Then one Enrollment links me to that offering, availability decreases by one, and confirmation follows creation.
+- **AC-04** (R2, R4): Given I am not enrolled and exactly one place remains, When I register for that offering, Then the final place is assigned by one atomic check-and-create operation and exactly one confirmation is returned.
+
+### US-03 — Receive a clear rejection
+
+**US-03:** As a student, I want a clear reason when registration is rejected, so that I know why my request did not change my enrollment.
+
+- **AC-05** (R2, R5): Given the catalog showed a place but the offering is now full, When I request registration, Then I receive “course full”, no Enrollment is created, and the enrollment count remains unchanged.
+- **AC-06** (R3, R5): Given I am already enrolled in the selected offering, When I request registration again, Then I receive “already enrolled”, no Enrollment is created, and the enrollment count remains unchanged.
+
+Uncertainty: R1 does not prescribe a visual format for the offering details. The criteria retain the required fields and make no additional university-policy assumptions.
 ~~~~
 
 **Response:**
@@ -186,21 +215,111 @@
 
 ### B2 — UML drafts (Prompt B)
 
-- **Tool:** (write here)
-- **Model:** (write here)
-- **Date:** (write here)
+- **Tool:** Codex
+- **Model:** not displayed
+- **Date:** 2026-10-18
 - **Purpose:** draft the sequence and class diagrams
 
 **Prompt:**
 
 ~~~~text
-(paste here)
+Using my approved scenario, R1–R5, stories and criteria below, return separate PlantUML code blocks for a sequence diagram and a domain class diagram.
+Sequence: include catalog browsing and guarded success, full-course and duplicate outcomes. Model final checks and creation as one atomic operation.
+Class: show domain concepts, useful attributes and multiplicities. State the capacity and uniqueness constraints. Explain assumptions and any technical lifelines.
+
+Approved scenario and rules:
+A student browses an electronic course catalog, chooses a course offering and requests registration. Each offering has a limited number of places. A Course describes a subject. A CourseOffering is one scheduled section in one semester. Registration always targets a specific offering. The student is signed in, the selected offering exists, and its capacity is a positive whole number. R1 Catalog: Show the course code, title, offering and available places for one semester. R2 Capacity: Recheck current availability when registering. Enrollment must never exceed the offering's capacity. R3 Duplicates: A student may have at most one enrollment in the same offering. Reject a repeat request. R4 Success: Create exactly one Enrollment linking the student and offering, update availability and return a confirmation. R5 Rejection: Explain "course full" or "already enrolled". Create no enrollment and leave the enrollment count unchanged. A catalog view does not reserve a place. The final checks and enrollment creation are one atomic operation.
+
+### US-01 — Browse offerings
+**US-01:** As a student, I want to browse offerings for one semester, so that I can compare course details and available places.
+- **AC-01** (R1): Given the catalog contains offerings for a semester, When I browse that semester, Then each offering shows its course code, title, offering and available places.
+- **AC-02** (R1): Given I am viewing a semester’s catalog, When I inspect an offering, Then the displayed available places describe that offering and do not reserve a place.
+
+### US-02 — Register for an offering
+**US-02:** As a student, I want to request registration in a selected offering, so that my enrollment is recorded and confirmed when the request succeeds.
+- **AC-03** (R2, R4): Given I am not enrolled and a place is available, When I register for the selected offering, Then one Enrollment links me to that offering, availability decreases by one, and confirmation follows creation.
+- **AC-04** (R2, R4): Given I am not enrolled and exactly one place remains, When I register for that offering, Then the final place is assigned by one atomic check-and-create operation and exactly one confirmation is returned.
+
+### US-03 — Receive a clear rejection
+**US-03:** As a student, I want a clear reason when registration is rejected, so that I know why my request did not change my enrollment.
+- **AC-05** (R2, R5): Given the catalog showed a place but the offering is now full, When I request registration, Then I receive “course full”, no Enrollment is created, and the enrollment count remains unchanged.
+- **AC-06** (R3, R5): Given I am already enrolled in the selected offering, When I request registration again, Then I receive “already enrolled”, no Enrollment is created, and the enrollment count remains unchanged.
 ~~~~
 
 **Response:**
 
 ~~~~text
-(paste here)
+The models below use Catalog and RegistrationService as technical lifelines; the domain classes remain Student, Course, CourseOffering and Enrollment. The atomic block represents the final duplicate and capacity checks and the enrollment attempt.
+
+```plantuml
+@startuml
+actor Student
+participant Catalog
+participant RegistrationService
+participant CourseOffering
+participant Enrollment
+
+Student -> Catalog: browseCatalog(semester)
+Catalog -> CourseOffering: listOfferings(semester)
+CourseOffering --> Catalog: courseCode, title, offering, availablePlaces
+Catalog --> Student: showCatalog(offerings)
+Student -> Catalog: selectOffering(offeringId)
+Catalog --> Student: selectedOffering(offeringId)
+Student -> RegistrationService: register(studentId, offeringId)
+
+critical Atomic registration attempt
+  RegistrationService -> Enrollment: checkDuplicateEnrollment(studentId, offeringId)
+  Enrollment --> RegistrationService: duplicateStatus
+  RegistrationService -> CourseOffering: checkCurrentCapacity(offeringId)
+  CourseOffering --> RegistrationService: enrolledCount, capacity
+  alt already enrolled
+    RegistrationService --> Student: reject("already enrolled")
+  else course full
+    RegistrationService --> Student: reject("course full")
+  else not enrolled and places left
+    RegistrationService --> Student: confirm("registered")
+    RegistrationService -> Enrollment: createEnrollment(studentId, offeringId)
+    Enrollment --> RegistrationService: enrollmentCreated
+    RegistrationService -> CourseOffering: incrementEnrollmentCount()
+  end
+end
+@enduml
+```
+
+```plantuml
+@startuml
+class Student {
+  studentId: String
+}
+
+class Course {
+  courseCode: String
+  title: String
+}
+
+class CourseOffering {
+  offeringId: String
+  semester: String
+  capacity: Integer
+  enrolledCount: Integer
+}
+
+class Enrollment {
+  enrollmentId: String
+}
+
+Student "1" -- "0..*" Enrollment : holds >
+CourseOffering "1" -- "0..*" Enrollment : receives >
+Course "1" -- "0..*" CourseOffering : is offered as >
+
+note "Capacity (R2): enrolledCount must never exceed capacity." as CapacityRule
+CapacityRule .. CourseOffering
+note "Uniqueness (R3): a student may have at most one Enrollment in the same offering." as UniqueRule
+UniqueRule .. Enrollment
+@enduml
+```
+
+Assumptions: the signed-in student and selected offering are supplied to the registration request. The service and catalog are interaction-level lifelines, not additional domain classes. The offering count is the current enrolled count used to determine availability.
 ~~~~
 
 ### B3 — Model critique (Prompt C)

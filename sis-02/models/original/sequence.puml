@@ -1,0 +1,32 @@
+@startuml
+actor Student
+participant Catalog
+participant RegistrationService
+participant CourseOffering
+participant Enrollment
+
+Student -> Catalog: browseCatalog(semester)
+Catalog -> CourseOffering: listOfferings(semester)
+CourseOffering --> Catalog: courseCode, title, offering, availablePlaces
+Catalog --> Student: showCatalog(offerings)
+Student -> Catalog: selectOffering(offeringId)
+Catalog --> Student: selectedOffering(offeringId)
+Student -> RegistrationService: register(studentId, offeringId)
+
+critical Atomic registration attempt
+  RegistrationService -> Enrollment: checkDuplicateEnrollment(studentId, offeringId)
+  Enrollment --> RegistrationService: duplicateStatus
+  RegistrationService -> CourseOffering: checkCurrentCapacity(offeringId)
+  CourseOffering --> RegistrationService: enrolledCount, capacity
+  alt already enrolled
+    RegistrationService --> Student: reject("already enrolled")
+  else course full
+    RegistrationService --> Student: reject("course full")
+  else not enrolled and places left
+    RegistrationService --> Student: confirm("registered")
+    RegistrationService -> Enrollment: createEnrollment(studentId, offeringId)
+    Enrollment --> RegistrationService: enrollmentCreated
+    RegistrationService -> CourseOffering: incrementEnrollmentCount()
+  end
+end
+@enduml
