@@ -128,7 +128,8 @@
 | Original class diagram had no displayed `availablePlaces` value. | Accepted: added derived `availablePlaces = capacity - enrolledCount`. | R1 asks the catalog to show available places, and deriving it from capacity and current enrollment count makes its source explicit without adding a class. | R1, R2 |
 | Original Course-to-CourseOffering end used `0..*`. | Modified after checking the assignment’s required association example to `Course "1" -- "1..*" CourseOffering`. | The handout gives one or more offerings at the CourseOffering end; matching that exact expected relationship avoids leaving the required multiplicity weaker. | R1 |
 | Critique proposed literal square-bracket guards. | Rejected the bracket characters; retained `alt already enrolled`, `else course full`, and `else not enrolled and places left`. | The assignment’s source-format instructions require unbracketed labels because PlantUML renders the alternative guard itself. | R2, R3, R5 |
-| Section 9 requires the student’s personal reflection. | Left pending for the student; W2 is declared in `submission.yml`. | The reflection must describe the student’s own experience and decisions, so I cannot truthfully invent it without their input. | W2 / authorship requirement |
+
+Known fail W2: section 9 remains a 24-word reminder because the required 150–200-word reflection must describe the student’s own experience and decisions.
 
 ## 8. Modeling explanation
 
