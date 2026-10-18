@@ -1,0 +1,35 @@
+@startuml
+actor Student
+participant Catalog
+participant RegistrationService
+participant CourseOffering
+participant Enrollment
+
+Student -> Catalog: browseCatalog(semester)
+Catalog -> CourseOffering: listOfferings(semester)
+CourseOffering --> Catalog: courseCode, title, offeringId, availablePlaces
+Catalog --> Student: showCatalog(offerings)
+Student -> Catalog: selectOffering(offeringId)
+Catalog --> Student: selectedOffering(offeringId)
+Student -> RegistrationService: register(studentId, offeringId)
+
+critical Atomic check-and-create registration
+  RegistrationService -> Enrollment: checkDuplicateEnrollment(studentId, offeringId)
+  Enrollment --> RegistrationService: duplicateStatus
+  RegistrationService -> CourseOffering: checkCurrentCapacity(offeringId)
+  CourseOffering --> RegistrationService: enrolledCount, capacity
+  alt already enrolled
+    RegistrationService --> Student: reject("already enrolled")
+  else course full
+    RegistrationService --> Student: reject("course full")
+  else not enrolled and places left
+    RegistrationService -> Enrollment: createEnrollment(studentId, offeringId)
+    Enrollment --> RegistrationService: enrollmentCreated
+    RegistrationService -> CourseOffering: incrementEnrollmentCount()
+    CourseOffering --> RegistrationService: availabilityUpdated
+    RegistrationService --> Student: confirmRegistration()
+  end
+end
+
+note over Catalog, CourseOffering: Catalog availability is a snapshot and reserves no place.
+@enduml
