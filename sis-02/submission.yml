@@ -15,8 +15,8 @@ assignment: "sis-02"            # do not edit
 
 student:
   name: "Sansyzbayev Sanzhar" # supplied in the requested PR title
-  student_id:                   # not available in this workspace; enter your actual ID
-  group:                        # not available in this workspace; enter the timetable code
+  student_id:       24B030314            # not available in this workspace; enter your actual ID
+  group:               Monday 16:00         # not available in this workspace; enter the timetable code
   github: sanzhar700            # remote repository owner
 
 assistant:
